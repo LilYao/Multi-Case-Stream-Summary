@@ -1,0 +1,445 @@
+﻿Global caseSummaryRow As Integer
+
+
+Public Sub Combine()
+
+    Dim ws As Worksheet
+    Dim shtMaster As Worksheet
+    Dim rTargetLastCell As Range
+    Dim rSourceLastCell As Range
+    Dim i As Integer
+    Dim j As Integer
+    
+    j = 1
+    i = 0
+    
+    'Clear Combined
+    Sheets("Case Summary Sheet").Activate
+    Sheets("Case Summary Sheet").UsedRange.ClearContents
+    
+    Set shtMaster = ThisWorkbook.Worksheets("Case Summary Sheet")
+    
+    'Cycle through each worksheet in the workbook.
+    'NB: Worksheets exclude chart sheets and macro sheets.
+    For Each ws In ThisWorkbook.Worksheets
+        Select Case ws.name
+    '
+    'Enter the sheet names you don't wnat to merge into the Combined sheet below.
+    '
+            Case "Settings", "Summary Set Up", "SummaryTemplate", "SummaryTemplate (2)", "Line Sizing B31.8", _
+            "Line Sizing B31.3", "Custom Pipe Chart", "Std Pipe Chart", "Case Summary Sheet"
+                'Do Nothing
+            Case Else
+                'Find the last cell containing data in the two sheets.
+                Set rTargetLastCell = LastCell(ThisWorkbook.Worksheets("Case Summary Sheet"))
+                Set rSourceLastCell = LastCell(ws)
+    
+                'Copy and paste the relevant data.
+                With ws
+                    .Range(.Cells(3, 1), rSourceLastCell).Copy _
+                        Destination:=shtMaster.Cells(rTargetLastCell.row + 3, 3)
+                        
+                   Sheets("Case Summary Sheet").Range(Cells(5 + i, 2), Cells(17 + i, 2)).value = j
+                    i = i + 16
+                    j = j + 1
+                End With
+        End Select
+    Next ws
+
+End Sub
+
+Public Function LastCell(wrkSht As Worksheet) As Range
+
+    Dim lLastCol As Long, lLastRow As Long
+
+    On Error Resume Next
+
+    With wrkSht
+        lLastCol = .Cells.Find("*", , , , xlByColumns, xlPrevious).Column
+        lLastRow = .Cells.Find("*", , , , xlByRows, xlPrevious).row
+
+        If lLastCol = 0 Then lLastCol = 1
+        If lLastRow = 0 Then lLastRow = 1
+
+        Set LastCell = .Cells(lLastRow, lLastCol)
+    End With
+    On Error GoTo 0
+
+End Function
+
+
+
+Sub Convert_StringToDecimal()
+    Dim rng As Range
+    Dim letter As String
+    Dim temp As String
+    
+    
+    Range("E3").Select
+    Set rng = Range("E3", ActiveCell.End(xlToRight))
+    rng.NumberFormat = "@"
+    
+    For Each c In rng
+        temp = Trim(c)
+        
+     
+        If Len(temp) = 1 Then
+        ElseIf Len(temp) = 2 Then
+            letter = Mid(temp, 2, 1)
+            If (letter = "A") Then
+                temp = Replace(temp, letter, ".01")
+                c.value = temp
+            ElseIf letter = "B" Then
+                temp = Replace(temp, letter, ".02")
+                c.value = temp
+            ElseIf letter = "_" Then
+                temp = Replace(temp, letter, ".03")
+                c.value = temp
+            End If
+        ElseIf Len(temp) = 3 Then
+            letter = Mid(temp, 3, 1)
+                If (letter = "A") Then
+                    temp = Replace(temp, letter, ".01")
+                    c.value = temp
+                ElseIf letter = "B" Then
+                    temp = Replace(c, letter, ".02")
+                    c.value = temp
+                ElseIf letter = "_" Then
+                temp = Replace(temp, letter, ".03")
+                c.value = temp
+                End If
+        ElseIf Len(temp) = 4 Then
+            letter = Mid(temp, 3, 2)
+                If (letter = "A") Then
+                    temp = Replace(temp, letter, ".01")
+                    c.value = temp
+                ElseIf letter = "B" Then
+                    temp = Replace(c, letter, ".02")
+                    c.value = temp
+                ElseIf letter = "_1" Or letter = "_2" Or letter = "_3" Then
+                temp = Replace(temp, letter, ".03")
+                c.value = temp
+                End If
+        End If
+    Next
+    
+End Sub
+
+Sub ConvertToGeneralFormat()
+    
+    
+    Range("E3").Select
+    Range("E3", ActiveCell.End(xlToRight)).Select
+    With Selection
+        .NumberFormat = "General"
+        .value = .value
+    End With
+End Sub
+
+Sub selectRange()
+    Dim lastRow As Long
+    Dim lastColumn As Long
+    Dim j As Integer
+    Dim i As Integer
+    Dim k As Integer
+    
+    Dim streamColl As Collection
+    Dim ws As Worksheet
+    Dim rowCount As Integer
+    Dim columnCount As Integer
+    Dim tempStream As Stream
+    Dim streamArray As Variant
+    Dim numberCount As Integer
+    
+    
+    Range("E3").Select
+    
+    lastRow = Range("E3", ActiveCell.End(xlDown)).Count + 5
+    lastColumn = Range("E3", ActiveCell.End(xlToRight)).Count
+    
+    'Set streamColl = New Collection
+    
+    numberCount = 0
+    k = 1
+    Do While IsNumeric(Cells(3, k + 4).value)
+        numberCount = numberCount + 1
+        k = k + 1
+    Loop
+   
+    MsgBox numberCount
+    ReDim streamArray(lastColumn) As Stream
+    
+    
+    
+  
+    For i = 1 To lastColumn
+            Set tempStream = New Stream
+                If (i <= numberCount) Then
+                    tempStream.streamName = Cells(3, 4 + i).value
+                Else
+                    tempStream.streamName1 = Cells(3, 4 + i).value
+                End If
+                tempStream.Temperature = Cells(5, i + 4).value
+                tempStream.Pressure = Cells(6, i + 4).value
+                tempStream.VapGasFlow = Cells(7, i + 4).value
+                tempStream.VapMW = Cells(8, i + 4).value
+                tempStream.VapZFactor = Cells(9, i + 4).value
+                tempStream.VapViscosity = Cells(10, i + 4).value
+                tempStream.LightLiqVolFlow = Cells(11, i + 4).value
+                tempStream.LightLiqMassDensity = Cells(12, i + 4).value
+                tempStream.LightLiqViscosity = Cells(13, i + 4).value
+                tempStream.HeavyLiqVolFlow = Cells(14, i + 4).value
+                tempStream.HeavyLiqMassDensity = Cells(15, i + 4).value
+                tempStream.HeavyLiqViscosity = Cells(16, i + 4).value
+                'streamColl.Add tempStream
+                Set streamArray(i) = tempStream
+                
+    Next
+            
+    'MsgBox streamColl(1).StreamName
+    'Call sortStream(streamColl)
+    Call sortStream(streamArray, numberCount)
+    
+    
+End Sub
+
+Sub SortDensityViscosity()
+    
+    Dim i As Integer
+    Dim lastColumn As Integer
+
+    lastColumn = 0
+    
+    Do While Not IsEmpty(Cells(5, lastColumn + 5))
+        lastColumn = lastColumn + 1
+    Loop
+      
+    
+    For i = 5 To lastColumn
+            If (Cells(12, i).value < 50 Or IsEmpty(Cells(12, i).value)) Then
+                'do nothing
+            ElseIf (Cells(12, i).value >= 50 And Cells(12, i).value <= 59) Then
+                Cells(12, i).Interior.Color = RGB(250, 0, 20)
+    
+            ElseIf (Cells(12, i).value > 59 And Not (Cells(12, i).value = Cells(15, i).value)) Then
+                Range(Cells(11, i), Cells(13, i)).Copy Destination:=Range("B36:B38")
+                Range(Cells(11, i), Cells(13, i)).Clear
+                
+                Range(Cells(14, i), Cells(16, i)).Copy Destination:=Range(Cells(11, i), Cells(13, i))
+                Range(Cells(14, i), Cells(16, i)).Clear
+                Range("B36:B38").Copy Destination:=Range(Cells(14, i), Cells(16, i))
+    
+            ElseIf (Cells(15, i).value = Cells(12, i).value) And (Cells(12, i).value > 60) Then
+                Range(Cells(11, i), Cells(13, i)).Copy Destination:=Range("B36:B38")
+                Range(Cells(11, i), Cells(13, i)).Clear
+                Range("B36:B38").Copy Destination:=Range(Cells(14, i), Cells(16, i))
+    
+            
+            End If
+    Next i
+    
+    Range("B36:B38").Clear
+    
+    End Sub
+    
+    Sub RemoveDash()
+    
+        Dim i As Integer
+        Dim j As Integer
+        Dim lastColumn As Integer
+        Dim lastRow As Integer
+    
+        Range("E5").Select
+        lastColumn = Range("E5", ActiveCell.End(xlToRight)).Count
+        lastRow = 16
+        
+        For i = 5 To lastColumn
+            For j = 1 To lastRow
+                If Not IsNumeric(Cells(j + 4, i).value) Then
+                    Cells(j + 4, i).Clear
+                    
+                Else
+                End If
+            Next j
+        Next i
+    
+End Sub
+
+Sub Convert_DecimalToString()
+    Dim rng As Range
+    Dim letter As String
+    Dim temp As String
+    
+    Range("E3").Select
+    Set rng = Range("E3", ActiveCell.End(xlToRight))
+    rng.NumberFormat = "@"
+    
+    For Each c In rng
+        temp = Trim(c)
+        
+        If Len(temp) = 1 Then
+        ElseIf Len(temp) = 2 Then
+            letter = Mid(temp, 2, 3)
+            If (letter = ".01") Then
+                temp = Replace(temp, letter, "A")
+                c.value = temp
+            ElseIf letter = ".02" Then
+                temp = Replace(temp, letter, "B")
+                c.value = temp
+            ElseIf letter = ".03" Then
+                temp = Replace(temp, letter, "_1")
+                c.value = temp
+            End If
+        ElseIf Len(temp) = 3 Then
+            letter = Mid(temp, 3, 3)
+                If (letter = ".01") Then
+                    temp = Replace(temp, letter, "A")
+                    c.value = temp
+                ElseIf letter = ".02" Then
+                    temp = Replace(c, letter, "B")
+                    c.value = temp
+                ElseIf letter = ".03" Then
+                temp = Replace(temp, letter, "_1")
+                c.value = temp
+                End If
+        ElseIf Len(temp) = 4 Then
+            letter = Mid(temp, 2, 3)
+            If (letter = ".01") Then
+                temp = Replace(temp, letter, "A")
+                c.value = temp
+            ElseIf (letter = ".02") Then
+                temp = Replace(temp, letter, "B")
+                c.value = temp
+            ElseIf letter = ".03" Then
+                temp = Replace(temp, letter, "_1")
+                c.value = temp
+            End If
+        ElseIf Len(temp) = 5 Then
+            letter = Mid(temp, 3, 3)
+            If (letter = ".01") Then
+                temp = Replace(temp, letter, "A")
+                c.value = temp
+            ElseIf (letter = ".02") Then
+                temp = Replace(temp, letter, "B")
+                c.value = temp
+            ElseIf letter = ".03" Then
+                temp = Replace(temp, letter, "_1")
+                c.value = temp
+            End If
+        End If
+    Next
+End Sub
+
+
+'Sub sortStream(ByVal pStreamColl As Collection)
+Sub sortStream(ByRef streamArray As Variant, ByVal numberCount As Integer)
+
+    Dim i As Integer
+    Dim j As Integer
+    Dim k As Integer
+    Dim lastColumn As Integer
+    Dim vtemp As Variant
+ 
+    lastColumn = numberCount
+    
+    
+    'Dim vtempcoll As Collection
+    
+   'Set vtempcoll = New Collection
+    
+  
+'  lastColumn = 0
+'  k = 1
+'  Do While IsNumeric(pStreamColl(k).StreamName)
+'    lastColumn = lastColumn + 1
+'    k = k + 1
+'  Loop
+'
+'  For i = 1 To lastColumn
+'    For j = i + 1 To lastColumn
+'        For k = 1 To lastColumn
+'        If pStreamColl(j).StreamName < pStreamColl(i).StreamName Then
+'            Set vtemp = pStreamColl(j)
+'            vtempcoll.Add vtemp
+'
+'
+'            pStreamColl.Remove j
+'            pStreamColl.Add vtempcoll(i), vtempcoll(i), i
+'        End If
+'        Next k
+'    Next j
+'Next i
+
+    For i = 1 To lastColumn
+        For j = i + 1 To lastColumn
+            
+            If streamArray(j).streamName < streamArray(i).streamName Then
+                Set vtemp = streamArray(j)
+                Set streamArray(j) = streamArray(i)
+                Set streamArray(i) = vtemp
+            End If
+        Next j
+    Next i
+    Range("E3").Select
+    columnlength = Range("E3", ActiveCell.End(xlToRight)).Count
+    
+    For i = 1 To columnlength
+         If (i <= lastColumn) Then
+                        Cells(3, 4 + i).value = streamArray(i).streamName
+                    Else
+                        Cells(3, 4 + i).value = streamArray(i).streamName1
+                    End If
+                    Cells(5, i + 4).value = streamArray(i).Temperature
+                    Cells(6, i + 4).value = streamArray(i).Pressure
+                    Cells(7, i + 4).value = streamArray(i).VapGasFlow
+                    Cells(8, i + 4).value = streamArray(i).VapMW
+                    Cells(9, i + 4).value = streamArray(i).VapZFactor
+                    Cells(10, i + 4).value = streamArray(i).VapViscosity
+                    Cells(11, i + 4).value = streamArray(i).LightLiqVolFlow
+                    Cells(12, i + 4).value = streamArray(i).LightLiqMassDensity
+                    Cells(13, i + 4).value = streamArray(i).LightLiqViscosity
+                    Cells(14, i + 4).value = streamArray(i).HeavyLiqVolFlow
+                    Cells(15, i + 4).value = streamArray(i).HeavyLiqMassDensity
+                    Cells(16, i + 4).value = streamArray(i).HeavyLiqViscosity
+                    'streamColl.Add tempStream
+    Next i
+    
+    'For i = 1 To lastColumn
+    '
+    '
+    ''    For j = i + 1 To lastColumn
+    ''        If IsNumeric(Cells(3, j).value) Then
+    ''            If Cells(3, j).value < Cells(3, i).value Then
+    ''                Range(Cells(3, i), Cells(16, i)).Copy Destination:=Range("A36:A49")
+    ''                Range(Cells(3, i), Cells(16, i)).Clear
+    ''
+    ''                Range(Cells(3, j), Cells(16, j)).Copy Destination:= _
+    ''                    Range(Cells(3, i), Cells(16, i))
+    ''
+    ''                Range(Cells(3, j), Cells(16, j)).Clear
+    ''
+    ''                Range("A36:A49").Copy Destination:=Range(Cells(3, j), Cells(16, j))
+    '
+    '
+    '                    'Set temp = Range(Cells(3, 5), Cells(16, 5))
+    '                    'temp.Copy Destination:=Range("A18")
+    '
+    '
+    '                    'Temp = rng.Cells(i)
+    '                    'rng.Cells(, i) = rng.Cells(, j)
+    '                    'rng.Cells(, j) = Temp
+    '            End If
+    '            Else
+    '            Application.ScreenUpdating = True
+    '            Range("A36, A49").Clear
+    '        End If
+    '    Next j
+    'Next i
+    'Application.ScreenUpdating = True
+    '
+    ''*****************************
+    '
+    '
+    '
+    'End Sub
+End Sub

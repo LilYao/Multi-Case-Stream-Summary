@@ -1,0 +1,33 @@
+Sub StartLineSize()
+    Dim ws_count As Integer
+    Dim i As Integer
+    Dim j As Integer
+    Dim ws As Worksheet
+    
+    ws_count = 0
+    j = 1
+    For Each ws In ActiveWorkbook.Worksheets
+        If ws.name = ("Summary_" & CStr(j)) Then
+            ws_count = ws_count + 1
+            j = j + 1
+        End If
+    Next
+    
+    Application.ScreenUpdating = False
+    
+    For i = 1 To ws_count
+        Sheets("Summary_" & CStr(i)).Activate
+        Call Convert_StringToDecimal
+        Call ConvertToGeneralFormat
+        Call RemoveDash
+        Call selectRange
+        Call SortDensityViscosity
+        Call Convert_DecimalToString
+    Next i
+    
+    Application.ScreenUpdating = True
+    
+    Call Combo
+    
+    
+End Sub

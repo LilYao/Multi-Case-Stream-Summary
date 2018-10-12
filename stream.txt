@@ -1,0 +1,131 @@
+﻿    Private pStreamname As Double
+    Private pStreamname1 As String
+    Private pTemperature As Double
+    Private pPressure As Double
+    Private pVapGasFlow As Double
+    Private pVapMW As Double
+    Private pVapZFactor As Double
+    Private pVapViscosity As Double
+    Private pLightLiqVolFlow As Double
+    Private pLightLiqMassDensity As Double
+    Private pLightLiqViscosity As Double
+    Private pHeavyLiqVolFlow As Double
+    Private pHeavyLiqMassDensity As Double
+    Private pHeavyLiqViscosity As Double
+
+Public Property Let streamName1(streamName As String)
+    pStreamname1 = streamName
+End Property
+
+Public Property Get streamName1() As String
+    streamName1 = pStreamname1
+End Property
+Public Property Let streamName(streamName As Double)
+    pStreamname = streamName
+End Property
+
+Public Property Get streamName() As Double
+    streamName = pStreamname
+End Property
+
+Public Property Let Temperature(Temperature As Double)
+    pTemperature = Temperature
+End Property
+
+Public Property Get Temperature() As Double
+    Temperature = pTemperature
+End Property
+
+Public Property Let Pressure(Pressure As Double)
+    pPressure = Pressure
+End Property
+
+Public Property Get Pressure() As Double
+    Pressure = pPressure
+End Property
+
+Public Property Let VapGasFlow(VapGasFlow As Double)
+    pVapGasFlow = VapGasFlow
+End Property
+
+Public Property Get VapGasFlow() As Double
+    VapGasFlow = pVapGasFlow
+End Property
+
+Public Property Let VapMW(VapMW As Double)
+    pVapMW = VapMW
+
+End Property
+
+Public Property Get VapMW() As Double
+    VapMW = pVapMW
+
+End Property
+
+Public Property Let VapZFactor(VapZFactor As Double)
+    pVapZFactor = VapZFactor
+
+End Property
+
+Public Property Get VapZFactor() As Double
+    VapZFactor = pVapZFactor
+
+End Property
+
+Public Property Let VapViscosity(VapViscosity As Double)
+    pVapViscosity = VapViscosity
+
+End Property
+
+Public Property Get VapViscosity() As Double
+    VapViscosity = pVapViscosity
+
+End Property
+
+Public Property Let LightLiqVolFlow(LightLiqVolFlow As Double)
+    pLightLiqVolFlow = LightLiqVolFlow
+End Property
+
+Public Property Get LightLiqVolFlow() As Double
+    LightLiqVolFlow = pLightLiqVolFlow
+End Property
+
+Public Property Let LightLiqMassDensity(LightLiqMassDensity As Double)
+    pLightLiqMassDensity = LightLiqMassDensity
+End Property
+
+Public Property Get LightLiqMassDensity() As Double
+    LightLiqMassDensity = pLightLiqMassDensity
+End Property
+
+Public Property Let LightLiqViscosity(LightLiqViscosity As Double)
+    pLightLiqViscosity = LightLiqViscosity
+End Property
+
+Public Property Get LightLiqViscosity() As Double
+    LightLiqViscosity = pLightLiqViscosity
+End Property
+
+Public Property Let HeavyLiqVolFlow(HeavyLiqVolFlow As Double)
+    pHeavyLiqVolFlow = HeavyLiqVolFlow
+End Property
+
+Public Property Get HeavyLiqVolFlow() As Double
+    HeavyLiqVolFlow = pHeavyLiqVolFlow
+End Property
+
+Public Property Let HeavyLiqMassDensity(HeavyLiqMassDensity As Double)
+    pHeavyLiqMassDensity = HeavyLiqMassDensity
+End Property
+
+Public Property Get HeavyLiqMassDensity() As Double
+    HeavyLiqMassDensity = pHeavyLiqMassDensity
+End Property
+
+Public Property Let HeavyLiqViscosity(HeavyLiqViscosity As Double)
+    pHeavyLiqViscosity = HeavyLiqViscosity
+End Property
+
+Public Property Get HeavyLiqViscosity() As Double
+    HeavyLiqViscosity = pHeavyLiqViscosity
+End Property

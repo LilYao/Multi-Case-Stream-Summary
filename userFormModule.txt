@@ -1,0 +1,102 @@
+﻿Private Declare Function FindWindowA Lib "USER32" _
+(ByVal lpClassName As String, _
+ByVal lpWindowName As String) As Long
+ 
+Private Declare Function GetWindowLongA Lib "USER32" _
+(ByVal hWnd As Long, _
+ByVal nIndex As Long) As Long
+ 
+Private Declare Function SetWindowLongA Lib "USER32" _
+(ByVal hWnd As Long, _
+ByVal nIndex As Long, _
+ByVal dwNewLong As Long) As Long
+ 
+Option Explicit
+ 
+Sub FormatUserForm(UserFormCaption As String)
+     
+    Dim hWnd            As Long
+    Dim exLong          As Long
+     
+    hWnd = FindWindowA(vbNullString, UserFormCaption)
+    exLong = GetWindowLongA(hWnd, -16)
+    If (exLong And &H20000) = 0 Then
+        SetWindowLongA hWnd, -16, exLong Or &H20000
+    Else
+    End If
+     
+End Sub
+ 
+Sub showform()
+     
+    UserForm1.Show
+     
+End Sub
+
+Public Sub LoadSummaryCase(selectedindex As String)
+    Dim sheetname As String
+    Dim actsheet As String
+    
+    sheetname = selectedindex
+    actsheet = ActiveSheet.name
+    
+    
+    If actsheet = "Line Sizing B31.8" Then
+    
+        Sheets(sheetname).Range("E3:CG16").Copy Destination:=Sheets(actsheet).Range("C82")
+        
+        Call LoadSummaryCaseName(actsheet, selectedindex)
+        
+    ElseIf actsheet = "Line Sizing B31.3" Then
+        
+        Sheets(sheetname).Range("E3:CG16").Copy Destination:=Sheets(actsheet).Range("C90")
+        
+        Call LoadSummaryCaseName(actsheet, selectedindex)
+        
+    Else
+        MsgBox "Load Summary Case Failed"
+        
+    End If
+End Sub
+
+Private Sub LoadSummaryCaseName(actsheet As String, selectedindex As String) 'actsheet As String, selectedindex As String
+    Dim destName As String
+    Dim i As Integer
+    Dim j As Integer
+    Dim caseName As String
+    Dim sourceSheetName As String
+    Dim length As Integer
+    Dim charPos As Integer
+
+    sourceSheetName = selectedindex
+    destName = actsheet
+    
+    If destName = "Line Sizing B31.8" Then
+        caseName = Trim(UCase(Sheets(sourceSheetName).Range("E1").value))
+        
+        length = Len(caseName)
+        charPos = InStrRev(caseName, "\")
+        
+        caseName = Mid(caseName, charPos + 1, length)
+        caseName = Replace(caseName, ".VMP", "")
+        
+        Sheets(destName).Range("A82").value = caseName
+        Sheets(destName).Range("A82").Font.Bold = True
+          
+        
+    Else
+        caseName = Trim(UCase(Sheets(sourceSheetName).Range("E1").value))
+        
+        length = Len(caseName)
+        charPos = InStrRev(caseName, "\")
+        
+        caseName = Mid(caseName, charPos + 1, length)
+        caseName = Replace(caseName, ".VMP", "")
+        
+        Sheets(destName).Range("A90").value = caseName
+        Sheets(destName).Range("A90").Font.Bold = True
+        
+    
+    End If
+    
+    End Sub

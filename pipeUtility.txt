@@ -1,0 +1,176 @@
+﻿Public Sub LoadPipe(pipeType As String)
+    Dim lastColumn As Integer
+    Dim lastRow As Integer
+    Dim i As Integer
+    Dim j As Integer
+    Dim tempPipeA As Pipe
+    Dim tempPipeB As Pipe
+    Dim tempPipeC As Pipe
+    Dim tempPipeStd As Pipe
+    Dim pipeArray_A() As Variant
+    Dim pipeArray_B() As Variant
+    Dim pipeArray_C() As Variant
+    Dim pipeArray_Std() As Variant
+    
+    Application.ScreenUpdating = False
+    Select Case pipeType
+        
+        Case "Custom Pipe"
+            Sheets("Custom Pipe Chart").Select
+            Sheets("Custom Pipe Chart").Range("A3").Select
+            lastRow = ActiveWorkbook.Sheets("Custom Pipe Chart").Range("A3", ActiveCell.End(xlDown)).Count
+            ReDim pipeArray_A(lastRow)
+            
+            
+            
+            For i = 1 To lastRow
+                Set tempPipeA = New Pipe
+                tempPipeA.pipeNominalSize = Cells(i + 2, 1).value
+                tempPipeA.pipeOD = Cells(i + 2, 2).value
+                tempPipeA.pipeSchedule = Cells(i + 2, 3).value
+                tempPipeA.pipeWT = Cells(i + 2, 4).value
+                tempPipeA.pipeID = Cells(i + 2, 5).value
+                tempPipeA.pipeYieldStrength = Cells(i + 2, 6).value
+                
+                Set pipeArray_A(i) = tempPipeA
+            Next i
+            
+            ActiveWorkbook.Sheets("Custom Pipe Chart").Range("A26").Select
+            lastRow = ActiveWorkbook.Sheets("Custom Pipe Chart").Range("A26", ActiveCell.End(xlDown)).Count
+            ReDim pipeArray_B(lastRow)
+            
+            For i = 1 To lastRow
+                Set tempPipeB = New Pipe
+                tempPipeB.pipeNominalSize = Cells(i + 25, 1).value
+                tempPipeB.pipeOD = Cells(i + 25, 2).value
+                tempPipeB.pipeSchedule = Cells(i + 25, 3).value
+                tempPipeB.pipeWT = Cells(i + 25, 4).value
+                tempPipeB.pipeID = Cells(i + 25, 5).value
+                tempPipeB.pipeYieldStrength = Cells(i + 25, 6).value
+                
+                Set pipeArray_B(i) = tempPipeB
+            Next i
+            
+            ActiveWorkbook.Sheets("Custom Pipe Chart").Range("A43").Select
+            lastRow = ActiveWorkbook.Sheets("Custom Pipe chart").Range("A43", ActiveCell.End(xlDown)).Count
+            ReDim pipeArray_C(lastRow)
+            
+            For i = 1 To lastRow
+                Set tempPipeC = New Pipe
+                tempPipeC.pipeNominalSize = Cells(i + 42, 1).value
+                tempPipeC.pipeOD = Cells(i + 42, 2).value
+                tempPipeC.pipeSchedule = Cells(i + 42, 3).value
+                tempPipeC.pipeWT = Cells(i + 42, 4).value
+                tempPipeC.pipeID = Cells(i + 42, 5).value
+                tempPipeC.pipeYieldStrength = Cells(i + 42, 6).value
+                
+                Set pipeArray_C(i) = tempPipeC
+            Next i
+            
+            Call PipeIterator(pipeArray_A, pipeArray_B, pipeArray_C)
+                
+        Case "Std Pipe"
+           ActiveWorkbook.Sheets("Std Pipe Chart").Select
+           Sheets("Std Pipe Chart").Range("A2").Select
+            lastRow = ActiveWorkbook.Sheets("Std Pipe Chart").Range("A2", ActiveCell.End(xlDown)).Count
+            ReDim pipeArray_Std(lastRow)
+            
+            For i = 1 To lastRow
+                Set tempPipeStd = New Pipe
+                tempPipeStd.pipeNominalSize = Cells(i + 1, 1).value
+                tempPipeStd.pipeOD = Cells(i + 1, 2).value
+                tempPipeStd.pipeSchedule = Cells(i + 1, 3).value
+                tempPipeStd.pipeWT = Cells(i + 1, 4).value
+                tempPipeStd.pipeID = Cells(i + 1, 5).value
+                
+                Set pipeArray_Std(i) = tempPipeStd
+            Next i
+            
+            Call PipeIterator(pipeArray_Std)
+    End Select
+Application.ScreenUpdating = True
+End Sub
+
+Public Sub PipeIterator(ByRef pipeArray As Variant, Optional ByRef pipeArray2 As Variant, Optional ByRef pipeArray3 As Variant)
+    Dim i As Integer
+    Dim j As Integer
+    Dim lastColumn As Integer
+    Dim arrayCount As Integer
+    Dim pipeArray_A() As Variant
+    Dim pipeArray_B() As Variant
+    Dim pipeArray_C() As Variant
+    Dim tempPipe As Pipe
+    Application.ScreenUpdating = False
+    
+    pipeArray_A = pipeArray
+    
+    If IsMissing(pipeArray2) Then
+        MsgBox "Missing"
+    Else
+        pipeArray_B = pipeArray2
+        pipeArray_C = pipeArray3
+    End If
+    
+    ActiveWorkbook.Sheets("Line Sizing B31.8").Select
+    Range("C47").Select
+    Range("C48:CE51").Clear
+    
+    lastColumn = Range("C47", ActiveCell.End(xlToRight)).Count
+    
+    
+    If IsMissing(pipeArray2) Then
+    
+    Else
+ 
+        For i = 1 To lastColumn
+            If Cells(47, i + 2).value = "A1" Then
+                arrayCount = UBound(pipeArray_A) - LBound(pipeArray_A)
+                For j = 1 To arrayCount
+                    Set tempPipe = pipeArray_A(j)
+                        Cells(48, i + 2).value = tempPipe.pipeNominalSize
+                        Cells(49, i + 2).value = tempPipe.pipeOD()
+                        Cells(50, i + 2).value = tempPipe.pipeSchedule()
+                        Cells(51, i + 2).value = tempPipe.pipeWT()
+                        
+                        If (Cells(80, i + 2).value = "OK" And Cells(81, i + 2).value = "OK") Then
+                            Exit For
+                        End If
+                 Next
+            
+            ElseIf Cells(48, i + 1).value = "B1" Then
+                arrayCount = UBound(pipeArray_B) - LBound(pipeArray_B)
+                For j = 1 To arrayCount
+                    Set tempPipe = pipeArray_B(j)
+                        Cells(48, i + 2).value = tempPipe.pipeNominalSize
+                        Cells(49, i + 2).value = tempPipe.pipeOD()
+                        Cells(50, i + 2).value = tempPipe.pipeSchedule()
+                        Cells(51, i + 2).value = tempPipe.pipeWT()
+                        
+                        If (Cells(80, i + 2).value = "OK" And Cells(81, i + 2).value = "OK") Then
+                            Exit For
+                        End If
+                Next
+            
+            ElseIf Cells(48, i + 1).value = "C1" Then
+                arrayCount = UBound(pipeArray_C) - LBound(pipeArray_C)
+                For j = 1 To arrayCount
+                    Set tempPipe = pipeArray_C(j)
+                        Cells(48, i + 2).value = tempPipe.pipeNominalSize
+                        Cells(49, i + 2).value = tempPipe.pipeOD()
+                        Cells(50, i + 2).value = tempPipe.pipeSchedule()
+                        Cells(51, i + 2).value = tempPipe.pipeWT()
+                        
+                        If (Cells(80, i + 2).value = "OK" And Cells(81, i + 2).value = "OK") Then
+                            Exit For
+                        End If
+                Next
+                
+            Else
+            
+            End If
+        Next
+        
+    End If
+    
+    Application.ScreenUpdating = True
+End Sub

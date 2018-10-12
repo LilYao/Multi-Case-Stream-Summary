@@ -1,0 +1,15 @@
+﻿
+Sub checkbutton()
+Dim ws As Excel.Worksheet
+Set ws = ActiveWorkbook.Worksheets.Item("Sheet2")
+
+Dim btn As Shape
+Set btn = ws.Shapes.Item("Option Button 1")
+Dim optBtn1 As Excel.OptionButton
+Set optBtn1 = Sheet2.Shapes.Item("Option Button 1").OLEFormat.Object
+
+If optBtn1.value = 1 Then ' it is checked
+   Debug.Print "Option Button 1 is checked"
+End If
+
+End Sub

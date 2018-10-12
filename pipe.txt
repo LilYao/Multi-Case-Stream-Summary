@@ -1,0 +1,57 @@
+﻿Option Explicit
+
+Private nominalSize As Double
+Private OD As Double
+Private schedule As String
+Private WT As Double
+Private ID As Double
+Private yieldStrength As Long
+
+
+Public Property Get pipeNominalSize() As Double
+    pipeNominalSize = nominalSize
+End Property
+
+Public Property Let pipeNominalSize(value As Double)
+    nominalSize = value
+End Property
+
+Public Property Get pipeOD() As Double
+    pipeOD = OD
+End Property
+
+Public Property Let pipeOD(value As Double)
+    OD = value
+End Property
+
+Public Property Get pipeSchedule() As String
+    pipeSchedule = schedule
+End Property
+
+Public Property Let pipeSchedule(value As String)
+    schedule = value
+End Property
+
+Public Property Get pipeWT() As Double
+    pipeWT = WT
+End Property
+
+Public Property Let pipeWT(value As Double)
+    WT = value
+End Property
+
+Public Property Get pipeID() As Double
+    pipeID = ID
+End Property
+
+Public Property Let pipeID(value As Double)
+    ID = value
+End Property
+
+Public Property Get pipeYieldStrength() As Long
+    pipeYieldStrength = yieldStrength
+End Property
+
+Public Property Let pipeYieldStrength(value As Long)
+    yieldStrength = value
+End Property
